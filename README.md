@@ -80,7 +80,7 @@ This repository provides a **step-by-step deployment guide** for Ubuntu Server.
 
 # 🏗 Architecture
 
-```
+
 
                  Internet
                      │
@@ -101,12 +101,12 @@ This repository provides a **step-by-step deployment guide** for Ubuntu Server.
               ┌──────────────┐
               │    MinIO     │
 
-
               └──────────────┘
                      │
              Object Storage
-
-...
+                     │
+             /data/minio
+---
 # 👨‍💻 Author
 
 Dibyajyoti Das
@@ -114,5 +114,3 @@ Dibyajyoti Das
 DevOps Engineer
 
 GitHub: https://github.com/BarifloCybernetics
-                     │
-             /data/minio
