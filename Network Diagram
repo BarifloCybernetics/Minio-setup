@@ -1,0 +1,13 @@
+Client
+   │
+   │ HTTPS
+   ▼
+Router
+   │
+Ubuntu Server
+   │
+Nginx
+   │
+MinIO
+   │
+Storage Disk
