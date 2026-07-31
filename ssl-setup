@@ -1,0 +1,125 @@
+For a production MinIO server, the recommended approach is not to configure SSL directly inside MinIO. Instead, use Nginx as a reverse proxy with a Let's Encrypt certificate.
+
+Recommended architecture:
+
+Internet
+     │
+     ▼
+HTTPS (443)
+     │
+     ▼
+Nginx
+     │
+     ├──> MinIO API (9500)
+     │
+     └──> MinIO Console (9501)
+
+This gives you:
+
+✅ Free Let's Encrypt SSL certificates
+✅ Automatic certificate renewal
+✅ Better security
+✅ Easier management
+✅ Standard production deployment
+Step 1: Configure DNS
+
+Create DNS records:
+
+Type	Host	Points To
+A	storage	YOUR_PUBLIC_IP
+A	console	YOUR_PUBLIC_IP
+
+Example:
+
+storage.example.com
+console.example.com
+Step 2: Install Nginx
+sudo apt update
+sudo apt install nginx -y
+
+Enable it:
+
+sudo systemctl enable nginx
+sudo systemctl start nginx
+Step 3: Create an Nginx configuration
+sudo nano /etc/nginx/sites-available/minio
+
+Example:
+
+server {
+    listen 80;
+    server_name storage.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:9500;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80;
+    server_name console.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:9501;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+}
+
+Enable it:
+
+sudo ln -s /etc/nginx/sites-available/minio /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+Step 4: Install Certbot
+sudo apt install certbot python3-certbot-nginx -y
+Step 5: Obtain SSL certificates
+sudo certbot --nginx
+
+Select:
+
+storage.example.com
+console.example.com
+
+Certbot will automatically:
+
+Install the certificates
+Configure HTTPS
+Redirect HTTP to HTTPS
+Step 6: Update the MinIO configuration
+
+Edit:
+
+sudo nano /etc/default/minio
+
+Update:
+
+MINIO_SERVER_URL="https://storage.example.com"
+
+Restart MinIO:
+
+sudo systemctl restart minio
+Step 7: Verify
+
+Open:
+
+https://storage.example.com
+
+API endpoint:
+
+https://storage.example.com
+
+Console:
+
+https://console.example.com
