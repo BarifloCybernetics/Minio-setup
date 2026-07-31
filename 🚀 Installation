@@ -1,26 +1,26 @@
-Update Server
+# Update Server
 sudo apt update
 sudo apt upgrade -y
-Install Packages
+# Install Packages
 sudo apt install wget curl unzip nginx ufw certbot python3-certbot-nginx -y
-Create User
+# Create User
 sudo useradd -r minio -s /usr/sbin/nologin
-Create Storage
+# Create Storage
 sudo mkdir -p /data/minio
 sudo chown -R minio:minio /data/minio
-Download MinIO
+# Download MinIO
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
 chmod +x minio
 sudo mv minio /usr/local/bin/
 ⚙ Configuration
 
-Example configuration:
+# Example configuration:
 
 MINIO_ROOT_USER=admin
 MINIO_ROOT_PASSWORD=StrongPassword@123
 MINIO_VOLUMES="/data/minio"
 MINIO_OPTS="--console-address :9001 --address :9000"
-🔥 Firewall
+# 🔥 Firewall
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
@@ -29,11 +29,11 @@ sudo ufw allow 9001/tcp
 sudo ufw enable
 🔒 HTTPS
 
-Install SSL Certificate
+# Install SSL Certificate
 
 sudo certbot --nginx
 
-Example Domain
+# Example Domain
 
 storage.example.com
 🌍 Reverse Proxy
