@@ -1,0 +1,8 @@
+# Check Service
+sudo systemctl status minio
+# View Logs
+journalctl -u minio -f
+# Check Ports
+ss -tulnp | grep 9000
+# Restart Service
+sudo systemctl restart minio
